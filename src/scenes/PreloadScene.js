@@ -100,16 +100,15 @@ export default class PreloadScene extends Scene {
 
   itemDict (str) {
     switch (str) {
-      case 'P':
-        return 'player'
-      case 'O':
-        return 'pipe-node-start'
-      case 'o':
-        return 'pipe-node-end'
-      case '-':
-        return 'pipe-left-right'
-      case 'x':
-        return 'supports'
+      case 'P': return 'player'
+      case 'O': return 'pipe-node-start'
+      case 'o': return 'pipe-node-end'
+      case '-': return 'pipe-left-right'
+      case 'q': return 'pipe-down-right'
+      case 'e': return 'pipe-left-down'
+      case 'z': return 'pipe-up-right'
+      case 'c': return 'pipe-left-up'
+      case 'x': return 'supports'
     }
   }
 

@@ -62,4 +62,10 @@ export default class ItemSprite extends GameObjects.Sprite {
     this.shocker.y = this.y
     this.shocker.anims.delayedPlay(delay, 'shock-repeat')
   }
+
+  destroyShocker () {
+    if (this.shocker) {
+      this.shocker.destroy()      
+    }
+  }
 }

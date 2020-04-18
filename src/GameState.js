@@ -128,8 +128,7 @@ export default class GameState {
 
   win (items) {
     this.sendShocks(items, true)
-    this.won = true
-    alert('won')
+    this.scene.winLevel()
   }
 
   createItems (items) {

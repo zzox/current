@@ -2,6 +2,8 @@ import { Scene, Input } from 'phaser'
 import State from '../GameState'
 import ItemSprite from '../objects/ItemSprite'
 
+const FINAL_LEVEL = 3
+
 export default class GameScene extends Scene {
   constructor () {
     super({ key: 'GameScene' })
@@ -13,15 +15,10 @@ export default class GameScene extends Scene {
     window.addEventListener('blur', () => this.pauseScene)
     window.addEventListener('focus', () => this.resumeScene)
 
-    this.levelData = { ...window.gameLevels[level] }
-    this.items = []
-
-    console.log('levelData', this.levelData)
+    this.newLevel(level, true)
   }
 
   create () {
-    this.state = new State(this.levelData, this)
-
     this.cameras.main.setBackgroundColor('#0095e9')
 
     this.addKeys()
@@ -31,7 +28,7 @@ export default class GameScene extends Scene {
     // pools for environment objects
     //
 
-    this.canMove = true 
+    this.canMove = true
   }
 
   update (time, delta) {
@@ -112,7 +109,33 @@ export default class GameScene extends Scene {
     this.scene.pause()
   }
 
-  nextLevel () {
+  winLevel () {
+    this.newLevel(this.levelNum + 1)
+  }
 
+  newLevel (levelNum, newScene = false) {
+    this.levelNum = levelNum
+    this.canMove = false
+
+    if (!newScene) {
+      // tween stuff closed
+      this.destroyItems()
+    }
+
+      this.levelData = { ...window.gameLevels[levelNum] }
+      this.items = []
+      this.state = new State(this.levelData, this)
+
+
+      console.log('levelData', this.levelData)
+
+      this.canMove = true
+  }
+
+  destroyItems () {
+    this.items.map(item => {
+      item.destroyShocker()
+      item.destroy()
+    })
   }
 }
