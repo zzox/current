@@ -2,6 +2,7 @@ import { Game, WEBGL } from 'phaser'
 import BootScene from './scenes/BootScene'
 import PreloadScene from './scenes/PreloadScene'
 import ClickStart from './scenes/ClickStart'
+import TitleScene from './scenes/TitleScene'
 import GameScene from './scenes/GameScene'
 
 const config = {
@@ -21,6 +22,7 @@ const config = {
     BootScene,
     PreloadScene,
     ClickStart,
+    TitleScene,
     GameScene
   ]
 }

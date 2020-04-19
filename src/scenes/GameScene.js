@@ -2,7 +2,7 @@ import { Scene, Input } from 'phaser'
 import State from '../GameState'
 import ItemSprite from '../objects/ItemSprite'
 
-const FINAL_LEVEL = 3
+const FINAL_LEVEL = 14
 
 export default class GameScene extends Scene {
   constructor () {
@@ -15,15 +15,19 @@ export default class GameScene extends Scene {
     window.addEventListener('blur', () => this.pauseScene)
     window.addEventListener('focus', () => this.resumeScene)
 
-    this.newLevel(level, true)
+    this.levelNum = level
   }
 
   create () {
     this.cameras.main.setBackgroundColor('#0095e9')
+    this.add.image(480, 67, 'background').setAlpha(0.6)
+    this.addWaves()
+
+    this.newLevel(this.levelNum, true)
 
     this.addKeys()
 
-    // add title up top
+    // add title up top, before adding to the screen
 
     // pools for environment objects
     //
@@ -113,6 +117,10 @@ export default class GameScene extends Scene {
     this.newLevel(this.levelNum + 1)
   }
 
+  loseLevel () {
+    this.newLevel(this.levelNum)
+  }
+
   newLevel (levelNum, newScene = false) {
     this.levelNum = levelNum
     this.canMove = false
@@ -126,7 +134,6 @@ export default class GameScene extends Scene {
       this.items = []
       this.state = new State(this.levelData, this)
 
-
       console.log('levelData', this.levelData)
 
       this.canMove = true
@@ -137,5 +144,12 @@ export default class GameScene extends Scene {
       item.destroyShocker()
       item.destroy()
     })
+  }
+
+  addWaves () {
+    for (let i = 0; i < 16; i++) {
+      const spr = this.add.sprite(i * 16 + 8, 4)
+      spr.play('wave')
+    }
   }
 }

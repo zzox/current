@@ -24,8 +24,6 @@ export default class GameState {
   }
 
   movePlayer (dir) {
-    // move char, increment if possible
-      // move other items in way, if possible
     const result = this.move(this.player, dir)
 
     if (result) {
@@ -34,12 +32,9 @@ export default class GameState {
 
     this.checkVoltage()
     // gravity effects
-    // check shock
-      // win/shock condition
-    // lose if moves are up
 
     if (this.moves === this.tries && !this.won) {
-      alert('lost!')
+      this.lose()
     }
   }
 
@@ -131,6 +126,10 @@ export default class GameState {
     this.scene.winLevel()
   }
 
+  lose () {
+    this.scene.loseLevel()
+  }
+
   createItems (items) {
     items.map(({ name, x, y }) => {
       const { xPos, yPos } = this.gridItems[x][y]
@@ -186,13 +185,25 @@ export default class GameState {
             }
           }
           break
+        case 'lead':
+          item = {
+            x,
+            y,
+            sprite,
+            movable: true,
+            canDie: false,
+            gravity: true,
+            dirs: [name.split('-')[1], name.split('-')[2]]
+          }
+          break
+        case 'rock':
         case 'supports':
           item = {
             x,
             y,
             sprite,
             movable: false,
-            canDie: true,
+            canDie: false,
             gravity: false
           }
           break
@@ -241,7 +252,12 @@ const spriteData = (name) => {
         canShock: false,
         anim: `${name}-still`
       }
-    default: 
+    case 'rock':
+      return {
+        canShock: false,
+        anim: name
+      }
+    default:
       return {
         canShock: true,
         anim: `${name}-idle`

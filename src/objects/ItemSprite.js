@@ -15,7 +15,7 @@ export default class ItemSprite extends GameObjects.Sprite {
         }
       })
     }
-
+    console.log(anim)
     this.anims.play(anim)
   }
 
@@ -65,7 +65,7 @@ export default class ItemSprite extends GameObjects.Sprite {
 
   destroyShocker () {
     if (this.shocker) {
-      this.shocker.destroy()      
+      this.shocker.destroy()
     }
   }
 }

@@ -23,6 +23,10 @@ export default class PreloadScene extends Scene {
     this.load.json('animations', 'assets/data/animations.json')
     this.load.text('levels', 'assets/data/levels.txt')
     this.load.spritesheet('sprites', 'assets/images/sprites.png', { frameWidth: 16, frameHeight: 16, spacing: 2, margin: 1 })
+    this.load.spritesheet('wave', 'assets/images/wave.png', { frameWidth: 16, frameHeight: 8, spacing: 2, margin: 1 })
+    this.load.spritesheet('rock', 'assets/images/rock.png', { frameWidth: 24, frameHeight: 24 })
+    this.load.image('logo', 'assets/images/logo.png')
+    this.load.image('background', 'assets/images/background1.png')
 
     this.animsArray = []
   }
@@ -43,7 +47,7 @@ export default class PreloadScene extends Scene {
       this.progressBar.destroy()
       this.progressBox.destroy()
       this.scene.start('ClickStart')
-    }, 1500)
+    }, 750)
   }
 
   parseLevels (levelsText) {
@@ -55,7 +59,7 @@ export default class PreloadScene extends Scene {
     for (let i = 0; i < levelsLines.length; i++) {
       let line = levelsLines[i]
       line = line.trim()
-      
+
       if (line === '\n') {
         continue
       }
@@ -79,7 +83,7 @@ export default class PreloadScene extends Scene {
         const items = line.split('')
         for (let j = 0; j < items.length; j++) {
           const item = items[j]
-          
+
           if (item !== '.') {
             level.items.push({ name: this.itemDict(item), x: j, y: yIndex })
           }
@@ -109,14 +113,14 @@ export default class PreloadScene extends Scene {
       case 'z': return 'pipe-up-right'
       case 'c': return 'pipe-left-up'
       case 'x': return 'supports'
+      case 'X': return 'rock'
     }
   }
 
   createAnimations (animations) {
     for (let item in animations) {
-      let items
-      let it = animations[item]
-      let alias = animations[item].alias
+      const it = animations[item]
+      const alias = animations[item].alias
 
       if (alias) {
         items = animations[alias].anims
@@ -134,6 +138,21 @@ export default class PreloadScene extends Scene {
         })
       })
     }
+
+    // extras
+    this.anims.create({
+      key: 'wave',
+      frames: this.anims.generateFrameNumbers('wave', { start: 0, end: 3 }),
+      frameRate: 9,
+      repeat: -1
+    })
+
+    this.anims.create({
+      key: 'rock',
+      frames: this.anims.generateFrameNumbers('rock', { start: 0, end: 0 }),
+      frameRate: 1,
+      repeat: -1
+    })
   }
 
   resize () {
