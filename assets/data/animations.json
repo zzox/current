@@ -144,5 +144,13 @@
         "frames": { "start": 29, "end": 29 }
       }
     ]
+  },
+  "diver": {
+    "anims": [
+      {
+        "key": "show",
+        "frames": { "start": 30, "end": 30 }
+      }
+    ]
   }
 }

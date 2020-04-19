@@ -7,14 +7,17 @@ export default class ItemSprite extends GameObjects.Sprite {
 
     if (canShock) {
       this.shocker = this.scene.add.sprite(x, y)
+        .setVisible(false)
+        .setDepth(0.75)
       scene.add.existing(this.shocker)
-      this.shocker.setVisible(false)
       this.shocker.on('animationcomplete', (animation) => {
         if (animation.key === 'shock-once') {
           this.shocker.setVisible(false)
         }
       })
     }
+
+    this.setDepth(0.5)
 
     if (facing === 'left') {
       this.flipX = true

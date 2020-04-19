@@ -126,7 +126,7 @@ export default class GameState {
           this.scene.moveShocker(toTile.xPos, toTile.yPos)
           if (toTile.item && toTile.item.isPlayer) {
             // kill player
-            this.scene.loseLevel()
+            this.scene.loseLevel('death')
           }
         }
         break
@@ -153,7 +153,7 @@ export default class GameState {
   }
 
   lose () {
-    this.scene.loseLevel()
+    this.scene.loseLevel('shock')
   }
 
   createItems (items) {

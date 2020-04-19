@@ -35,6 +35,26 @@ export default class GameScene extends Scene {
     //
 
     this.canMove = true
+
+    this.cameras.main.fadeIn(1000)
+
+
+
+    // this.yellow = this.add.graphics()
+    //   .fillStyle(0x1A1A1A)
+    //   .fillRect(0, 0, 240, 135)
+
+    // this.red = this.add.graphics()
+    //   .fillStyle(0x1A1A1A)
+    //   .fillRect(0, 0, 240, 135)
+    this.shockTransition = this.add.sprite(120, 67).setVisible(false).setScale(0.1).setDepth(1)
+    this.shockTransition.anims.play('bolt-show')
+
+    this.teethTransition = this.add.sprite(120, 67).setVisible(false).setScale(0.1).setDepth(1)
+    this.teethTransition.anims.play('teeth-show')
+
+    this.diverTransition = this.add.sprite(120, 67).setVisible(false).setScale(0.1).setDepth(1)
+    this.diverTransition.anims.play('diver-show')
   }
 
   update (time, delta) {
@@ -42,6 +62,10 @@ export default class GameScene extends Scene {
     if (this.canMove && dir) {
       console.log(dir)
       this.state.movePlayer(dir)
+    }
+
+    if (this.keys.restart.isDown && !this.prevState.restart && this.canMove) {
+      this.loseLevel('restart')
     }
 
     this.updatePrevState()
@@ -127,42 +151,96 @@ export default class GameScene extends Scene {
   }
 
   winLevel () {
-    this.newLevel(this.levelNum + 1)
+    this.newLevel(this.levelNum + 1, false, 'win')
   }
 
-  loseLevel () {
-    this.newLevel(this.levelNum)
+  loseLevel (type) {
+    this.newLevel(this.levelNum, false, type)
   }
 
-  newLevel (levelNum, newScene = false) {
+  newLevel (levelNum, newScene = false, type = 'restart') {
     this.levelNum = levelNum
     this.canMove = false
 
-    if (!newScene) {
+    if (newScene) {
+      this.makeLevelItems(levelNum)
+    } else {
       // tween stuff closed
-      this.destroyItems()
-    }
 
-      this.levelData = { ...window.gameLevels[levelNum] }
-      if (this.levelData.leakShock) {
-        this.shocker = this.add.sprite()
-        this.shocker.setVisible(false)
-        this.shocker.on('animationcomplete', (animation) => {
-          if (animation.key === 'shock-twice') {
-            this.shocker.setVisible(false)
-          }
-        })
+      let itemType, delay
+      switch (type) {
+        case 'death':
+          delay = 250
+          itemType = this.shockTransition
+          break
+        case 'shock':
+          delay = 1000
+          itemType = this.shockTransition
+          break
+        case 'eaten':
+          delay = 500
+          itemType = this.teethTransition
+          break
+        case 'win':
+          delay = 1000
+          itemType = this.diverTransition
+          break
+        case 'restart':
+          delay = 0
+          itemType = this.diverTransition
+          break
       }
 
-      this.hud.updateName(`${this.levelData.index} - ${this.levelData.name}`)
-      this.hud.updateMoves(this.levelData.tries)
+      itemType.setVisible(true)
 
-      this.items = []
-      this.state = new State(this.levelData, this)
+      this.add.tween({
+        delay,
+        targets: itemType,
+        scaleX: { from: 0.1, to: 100 },
+        scaleY: { from: 0.1, to: 100 },
+        duration: 500,
+        onComplete: () => {
+          this.destroyItems()
+          this.makeLevelItems(levelNum, itemType)
+        }
+      })
+    }
+  }
 
-      console.log('levelData', this.levelData)
+  makeLevelItems (levelNum, itemType) {
+    this.levelData = { ...window.gameLevels[levelNum] }
+    if (this.levelData.leakShock) {
+      this.shocker = this.add.sprite()
+      this.shocker.setVisible(false)
+      this.shocker.on('animationcomplete', (animation) => {
+        if (animation.key === 'shock-twice') {
+          this.shocker.setVisible(false)
+        }
+      })
+    }
 
+    this.hud.updateName(`${this.levelData.index} - ${this.levelData.name}`)
+    this.hud.updateMoves(this.levelData.tries)
+
+    this.items = []
+    this.state = new State(this.levelData, this)
+
+    console.log('levelData', this.levelData)
+
+    if (itemType) {
+      this.add.tween({
+        targets: itemType,
+        scaleX: { from: 100, to: 0.1 },
+        scaleY: { from: 100, to: 0.1 },
+        duration: 500,
+        onComplete: () => {
+          itemType.setVisible(false)
+          this.canMove = true
+        }
+      })
+    } else {
       this.canMove = true
+    }
   }
 
   destroyItems () {
