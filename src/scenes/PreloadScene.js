@@ -28,25 +28,25 @@ export default class PreloadScene extends Scene {
     this.load.image('logo', 'assets/images/logo.png')
     this.load.image('background', 'assets/images/background1.png')
 
-    this.load.audioSprite('sfx', 
+    this.load.audioSprite('sfx',
       'assets/sound/sfx.json',
       [
         'assets/sound/sfx.mp3',
         'assets/sound/sfx.ac3',
         'assets/sound/sfx.m4a',
-        'assets/sound/sfx.ogg',
-      ], 
+        'assets/sound/sfx.ogg'
+      ],
       { instances: 4 }
     )
 
-    this.load.audioSprite('soundtrack', 
+    this.load.audioSprite('soundtrack',
       'assets/sound/soundtrack.json',
       [
         'assets/sound/soundtrack.mp3',
         'assets/sound/soundtrack.ac3',
         'assets/sound/soundtrack.m4a',
-        'assets/sound/soundtrack.ogg',
-      ], 
+        'assets/sound/soundtrack.ogg'
+      ],
       { instances: 4 }
     )
   }

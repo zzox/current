@@ -1,5 +1,4 @@
-import { Scene, Input } from 'phaser'
-import store from 'store'
+import { Scene } from 'phaser'
 
 export default class EndScene extends Scene {
   constructor () {

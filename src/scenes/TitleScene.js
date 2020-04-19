@@ -89,7 +89,6 @@ export default class TitleScene extends Scene {
   }
 
   loadGame () {
-    console.log(this.continuedLevel)
     this.scene.start('GameScene', { level: this.continuedLevel })
   }
 
