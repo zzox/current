@@ -1,7 +1,7 @@
 import { GameObjects } from 'phaser'
 
 export default class ItemSprite extends GameObjects.Sprite {
-  constructor ({ scene, x, y, type, anim, canShock }) {
+  constructor ({ scene, x, y, type, anim, canShock, canFlip }) {
     super(scene, x, y)
     scene.add.existing(this)
 
@@ -15,20 +15,32 @@ export default class ItemSprite extends GameObjects.Sprite {
         }
       })
     }
-    console.log(anim)
+
+    this.canFlip = canFlip
     this.anims.play(anim)
   }
 
-  moveTo (x, y) {
-    // TODO: bubbles for movement
+  moveTo (x, y, fromGravity = false) {
+    const duration = fromGravity ? 666 : 133
+
     if (this.x !== x) {
       this.scene.tweens.add({
         targets: this,
         x: { from: this.x, to: x },
         ease: 'Power1',
-        duration: 166,
+        duration,
         repeat: 0
       })
+
+      if (this.canFlip) {
+        if (this.x > x) {
+          this.flipX = true
+        }
+
+        if (this.x < x) {
+          this.flipX = false
+        }
+      }
     }
 
     if (this.y !== y) {
@@ -36,7 +48,7 @@ export default class ItemSprite extends GameObjects.Sprite {
         targets: this,
         y: { from: this.y, to: y },
         ease: 'Power1',
-        duration: 166,
+        duration,
         repeat: 0
       })
     }

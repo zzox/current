@@ -91,7 +91,7 @@ export default class TitleScene extends Scene {
   }
 
   newGame () {
-    this.scene.start('GameScene', { level: 0 })
+    this.scene.start('GameScene', { level: 4 })
   }
 
   loadGame () {

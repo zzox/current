@@ -105,6 +105,8 @@ export default class PreloadScene extends Scene {
   itemDict (str) {
     switch (str) {
       case 'P': return 'player'
+      case 'f': return 'fish-left'
+      case 'F': return 'fish-right'
       case 'O': return 'pipe-node-start'
       case 'o': return 'pipe-node-end'
       case '-': return 'pipe-left-right'
@@ -112,6 +114,11 @@ export default class PreloadScene extends Scene {
       case 'e': return 'pipe-left-down'
       case 'z': return 'pipe-up-right'
       case 'c': return 'pipe-left-up'
+      case '+': return 'lead-left-right'
+      case 'r': return 'lead-down-right'
+      case 'y': return 'lead-left-down'
+      case 'v': return 'lead-up-right'
+      case 'n': return 'lead-left-up'
       case 'x': return 'supports'
       case 'X': return 'rock'
     }
@@ -119,6 +126,7 @@ export default class PreloadScene extends Scene {
 
   createAnimations (animations) {
     for (let item in animations) {
+      let items
       const it = animations[item]
       const alias = animations[item].alias
 

@@ -110,5 +110,33 @@
         "frameRate": 6
       }
     ]
+  },
+  "lead": {
+    "anims": [
+      {
+        "key": "down-right",
+        "frames": { "start": 24, "end": 24 }
+      },
+      {
+        "key": "left-right",
+        "frames": { "start": 25, "end": 25 }
+      },
+      {
+        "key": "left-down",
+        "frames": { "start": 26, "end": 26 }
+      },
+      {
+        "key": "left-up",
+        "frames": { "start": 27, "end": 27 }
+      },
+      {
+        "key": "up-right",
+        "frames": { "start": 28, "end": 28 }
+      },
+      {
+        "key": "up-down",
+        "frames": { "start": 29, "end": 29 }
+      }
+    ]
   }
 }

@@ -19,7 +19,6 @@ export default class GameState {
     this.moves = 0
     this.won = false
     this.createGrid()
-    console.log(this.gridItems)
     this.createItems(items)
   }
 
@@ -30,6 +29,8 @@ export default class GameState {
       this.moves++
     }
 
+    this.checkGravity()
+
     this.checkVoltage()
     // gravity effects
 
@@ -38,7 +39,7 @@ export default class GameState {
     }
   }
 
-  move (item, dir) {
+  move (item, dir, forGravity = false) {
     const { x, y } = item
 
     const { x: newX, y: newY } = getDirXAndY(dir, x, y)
@@ -56,7 +57,7 @@ export default class GameState {
         return false
       }
 
-      const results = this.move(tile.item, dir)
+      const results = this.move(tile.item, dir, forGravity)
 
       if (!results) {
         return false
@@ -70,16 +71,19 @@ export default class GameState {
     const oldTile = this.getItemAt(x, y, this.grid)
     oldTile.item = null
 
-    item.sprite.moveTo(tile.xPos, tile.yPos)
+    item.sprite.moveTo(tile.xPos, tile.yPos, forGravity)
     return true
   }
 
-  getItemAt (x, y) {
-    if (x < 0 || x >= GAME_WIDTH || y < 0 || y >= GAME_HEIGHT) {
-      return null
-    }
-
-    return this.gridItems[x][y]
+  checkGravity () {
+    this.allItems.map(item => {
+      if (item.gravity) {
+        let it = this.move(item, 'down', true)
+        while (it) {
+          it = this.move(item, 'down', true)
+        }
+      }
+    })
   }
 
   checkVoltage () {
@@ -107,7 +111,6 @@ export default class GameState {
       }
     }
 
-    console.log('here')
     this.sendShocks(items)
   }
 
@@ -131,6 +134,8 @@ export default class GameState {
   }
 
   createItems (items) {
+    this.allItems = []
+
     items.map(({ name, x, y }) => {
       const { xPos, yPos } = this.gridItems[x][y]
 
@@ -209,6 +214,7 @@ export default class GameState {
           break
       }
 
+      this.allItems.push(item)
       this.gridItems[x][y].item = item
     })
   }
@@ -227,6 +233,14 @@ export default class GameState {
       this.gridItems.push(yArr)
     }
   }
+
+  getItemAt (x, y) {
+    if (x < 0 || x >= GAME_WIDTH || y < 0 || y >= GAME_HEIGHT) {
+      return null
+    }
+
+    return this.gridItems[x][y]
+  }
 }
 
 const getDirXAndY = (dir, x, y) => {
@@ -243,6 +257,7 @@ const getDirXAndY = (dir, x, y) => {
 const spriteData = (name) => {
   switch (name.split('-')[0]) {
     case 'pipe':
+    case 'lead':
       return {
         canShock: true,
         anim: name
@@ -256,6 +271,18 @@ const spriteData = (name) => {
       return {
         canShock: false,
         anim: name
+      }
+    case 'player':
+      return {
+        canFlip: true,
+        canShock: true,
+        anim: `${name}-idle`
+      }
+    case 'fish':
+      return {
+        canFlip: true,
+        canShock: true,
+        anim: 'fish-idle'
       }
     default:
       return {
