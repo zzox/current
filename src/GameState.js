@@ -18,8 +18,8 @@ export default class GameState {
     console.log(leakShock)
     this.createGrid()
     this.createItems(items)
-    // this.checkGravity()
-    // this.checkVoltage()
+    this.checkGravity()
+    this.checkVoltage()
   }
 
   movePlayer (dir) {
@@ -27,6 +27,7 @@ export default class GameState {
 
     if (result) {
       this.moves++
+      this.scene.hud.updateMoves(this.tries - this.moves)
     }
 
     this.moveChars()
@@ -146,6 +147,7 @@ export default class GameState {
   }
 
   win (items) {
+    this.won = true
     this.sendShocks(items, true)
     this.scene.winLevel()
   }

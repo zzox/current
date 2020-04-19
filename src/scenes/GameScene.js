@@ -1,6 +1,7 @@
 import { Scene, Input } from 'phaser'
 import State from '../GameState'
 import ItemSprite from '../objects/ItemSprite'
+import HUD from '../objects/HUD'
 
 const FINAL_LEVEL = 14
 
@@ -23,6 +24,7 @@ export default class GameScene extends Scene {
     this.add.image(480, 67, 'background').setAlpha(0.6)
     this.addWaves()
 
+    this.hud = new HUD(this)
     this.newLevel(this.levelNum, true)
 
     this.addKeys()
@@ -151,6 +153,9 @@ export default class GameScene extends Scene {
           }
         })
       }
+
+      this.hud.updateName(`${this.levelData.index} - ${this.levelData.name}`)
+      this.hud.updateMoves(this.levelData.tries)
 
       this.items = []
       this.state = new State(this.levelData, this)
