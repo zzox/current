@@ -6,7 +6,7 @@ const GRID_ITEM_OFFSET = 8
 const SHOCK_DELAY = 66
 
 export default class GameState {
-  constructor ({ items, tries }, scene) {
+  constructor ({ items, tries, leakShock }, scene) {
     this.scene = scene
 
     this.gridItems = []
@@ -14,8 +14,12 @@ export default class GameState {
     this.tries = tries
     this.moves = 0
     this.won = false
+    this.leakShock = leakShock
+    console.log(leakShock)
     this.createGrid()
     this.createItems(items)
+    // this.checkGravity()
+    // this.checkVoltage()
   }
 
   movePlayer (dir) {
@@ -41,11 +45,8 @@ export default class GameState {
 
     const { x: newX, y: newY } = getDirXAndY(dir, x, y)
 
-    console.log(newX, newY)
     const tile = this.getItemAt(newX, newY)
     if (!tile) {
-      // TODO: Remove
-      console.log('oob')
       return false
     }
 
@@ -75,7 +76,7 @@ export default class GameState {
   moveChars () {
     this.allItems.map(item => {
       if (item.isChar) {
-        let move = this.move(item, item.facing)
+        const move = this.move(item, item.facing)
 
         if (!move) {
           item.facing = item.facing === 'left' ? 'right' : 'left'
@@ -99,7 +100,7 @@ export default class GameState {
   checkVoltage () {
     let curr = this.startNode
     let currDir = this.startNode.dirs[0]
-    let items = [curr.sprite]
+    const items = [curr.sprite]
 
     while (true) {
       const inverse = getInverse(currDir)
@@ -111,12 +112,22 @@ export default class GameState {
         items.push(curr.sprite)
 
         if (curr.end) {
+          if (this.leakShock) {
+            this.scene.hideShocker()
+          }
           this.win(items)
           return
         } else {
           currDir = toTile.item.dirs.find(it => it !== inverse)
         }
       } else {
+        if (toTile && this.leakShock) {
+          this.scene.moveShocker(toTile.xPos, toTile.yPos)
+          if (toTile.item && toTile.item.isPlayer) {
+            // kill player
+            this.scene.loseLevel()
+          }
+        }
         break
       }
     }
@@ -164,6 +175,7 @@ export default class GameState {
             x,
             y,
             sprite,
+            isPlayer: true,
             movable: true,
             canDie: true,
             gravity: false

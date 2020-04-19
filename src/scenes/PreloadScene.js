@@ -89,10 +89,11 @@ export default class PreloadScene extends Scene {
           }
         }
       } else {
-        const data = line.split(':')
+        const data = line.split(';')
         level.index = parseInt(data[0])
         level.name = data[1]
         level.tries = parseInt(data[2])
+        level.leakShock = data[3] === 'shock'
       }
 
       yIndex++
@@ -126,16 +127,8 @@ export default class PreloadScene extends Scene {
   }
 
   createAnimations (animations) {
-    for (let item in animations) {
-      let items
+    for (const item in animations) {
       const it = animations[item]
-      const alias = animations[item].alias
-
-      if (alias) {
-        items = animations[alias].anims
-      } else {
-        items = animations[item].anims
-      }
 
       it.anims.map(anim => {
         this.anims.create({

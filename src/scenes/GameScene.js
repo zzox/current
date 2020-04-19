@@ -85,6 +85,17 @@ export default class GameScene extends Scene {
     return spr
   }
 
+  hideShocker () {
+    this.shocker.setVisible(false)
+  }
+
+  moveShocker (x, y) {
+    this.shocker.x = x
+    this.shocker.y = y
+    this.shocker.setVisible(true)
+    this.shocker.anims.play('shock-twice')
+  }
+
   addKeys () {
     const { UP, DOWN, LEFT, RIGHT, R } = Input.Keyboard.KeyCodes
 
@@ -131,6 +142,16 @@ export default class GameScene extends Scene {
     }
 
       this.levelData = { ...window.gameLevels[levelNum] }
+      if (this.levelData.leakShock) {
+        this.shocker = this.add.sprite()
+        this.shocker.setVisible(false)
+        this.shocker.on('animationcomplete', (animation) => {
+          if (animation.key === 'shock-twice') {
+            this.shocker.setVisible(false)
+          }
+        })
+      }
+
       this.items = []
       this.state = new State(this.levelData, this)
 
@@ -140,6 +161,10 @@ export default class GameScene extends Scene {
   }
 
   destroyItems () {
+    if (this.shocker) {
+      this.shocker.destroy()
+    }
+
     this.items.map(item => {
       item.destroyShocker()
       item.destroy()
