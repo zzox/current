@@ -9,11 +9,7 @@ export default class GameState {
   constructor ({ items, tries }, scene) {
     this.scene = scene
 
-    // make grid
     this.gridItems = []
-    this.characters = []
-    this.pipes = []
-    this.env = []
     this.player = null
     this.tries = tries
     this.moves = 0
@@ -29,10 +25,11 @@ export default class GameState {
       this.moves++
     }
 
+    this.moveChars()
+
     this.checkGravity()
 
     this.checkVoltage()
-    // gravity effects
 
     if (this.moves === this.tries && !this.won) {
       this.lose()
@@ -75,10 +72,23 @@ export default class GameState {
     return true
   }
 
+  moveChars () {
+    this.allItems.map(item => {
+      if (item.isChar) {
+        let move = this.move(item, item.facing)
+
+        if (!move) {
+          item.facing = item.facing === 'left' ? 'right' : 'left'
+        }
+      }
+    })
+  }
+
   checkGravity () {
     this.allItems.map(item => {
       if (item.gravity) {
         let it = this.move(item, 'down', true)
+        // if first is true, make a sound
         while (it) {
           it = this.move(item, 'down', true)
         }
@@ -159,6 +169,18 @@ export default class GameState {
             gravity: false
           }
           this.player = item
+          break
+        case 'fish':
+          item = {
+            x,
+            y,
+            sprite,
+            isChar: true,
+            facing: name.split('-')[1],
+            movable: true,
+            canDie: true,
+            gravity: false
+          }
           break
         case 'pipe':
           if (name.split('-')[1] === 'node') {
@@ -280,6 +302,7 @@ const spriteData = (name) => {
       }
     case 'fish':
       return {
+        facing: name.split('-')[1],
         canFlip: true,
         canShock: true,
         anim: 'fish-idle'

@@ -1,7 +1,7 @@
 import { GameObjects } from 'phaser'
 
 export default class ItemSprite extends GameObjects.Sprite {
-  constructor ({ scene, x, y, type, anim, canShock, canFlip }) {
+  constructor ({ scene, x, y, type, anim, canShock, canFlip, facing }) {
     super(scene, x, y)
     scene.add.existing(this)
 
@@ -14,6 +14,10 @@ export default class ItemSprite extends GameObjects.Sprite {
           this.shocker.setVisible(false)
         }
       })
+    }
+
+    if (facing === 'left') {
+      this.flipX = true
     }
 
     this.canFlip = canFlip

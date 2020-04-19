@@ -89,7 +89,6 @@ export default class PreloadScene extends Scene {
           }
         }
       } else {
-        // ugly
         const data = line.split(':')
         level.index = parseInt(data[0])
         level.name = data[1]
@@ -110,11 +109,13 @@ export default class PreloadScene extends Scene {
       case 'O': return 'pipe-node-start'
       case 'o': return 'pipe-node-end'
       case '-': return 'pipe-left-right'
+      case '|': return 'pipe-up-down'
       case 'q': return 'pipe-down-right'
       case 'e': return 'pipe-left-down'
       case 'z': return 'pipe-up-right'
       case 'c': return 'pipe-left-up'
       case '+': return 'lead-left-right'
+      case '/': return 'lead-up-down'
       case 'r': return 'lead-down-right'
       case 'y': return 'lead-left-down'
       case 'v': return 'lead-up-right'
