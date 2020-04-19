@@ -15,7 +15,6 @@ export default class GameState {
     this.moves = 0
     this.won = false
     this.leakShock = leakShock
-    console.log(leakShock)
     this.createGrid()
     this.createItems(items)
     this.checkGravity()
@@ -27,7 +26,7 @@ export default class GameState {
 
     if (result) {
       this.moves++
-      this.scene.playMove(this.moves)
+      this.scene.playMove(this.tries - this.moves)
       this.scene.hud.updateMoves(this.tries - this.moves)
     } else {
       this.scene.playShock(this.moves)
@@ -44,7 +43,7 @@ export default class GameState {
     }
   }
 
-  move (item, dir, forGravity = false) {
+  move (item, dir, forGravity = false, fromFish) {
     const { x, y } = item
 
     const { x: newX, y: newY } = getDirXAndY(dir, x, y)
@@ -57,6 +56,10 @@ export default class GameState {
     if (tile.item) {
       if (!tile.item.movable) {
         return false
+      }
+
+      if (fromFish && tile.item.isPlayer) {
+        this.scene.loseLevel('eaten')
       }
 
       const results = this.move(tile.item, dir, forGravity)
@@ -80,7 +83,17 @@ export default class GameState {
   moveChars () {
     this.allItems.map(item => {
       if (item.isChar) {
-        const move = this.move(item, item.facing)
+        const move = this.move(item, item.facing, false, true)
+
+        if (!move) {
+          const tile = item.facing === 'left'
+            ? this.getItemAt(item.x - 1, item.y)
+            : this.getItemAt(item.x + 1, item.y)
+
+          if (tile && tile.item && tile.item.isPlayer) {
+            this.scene.loseLevel('eaten')
+          }
+        }
 
         if (!move) {
           item.facing = item.facing === 'left' ? 'right' : 'left'

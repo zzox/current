@@ -4,6 +4,7 @@ import PreloadScene from './scenes/PreloadScene'
 import ClickStart from './scenes/ClickStart'
 import TitleScene from './scenes/TitleScene'
 import GameScene from './scenes/GameScene'
+import EndScene from './scenes/EndScene'
 
 const config = {
   type: WEBGL,
@@ -23,7 +24,8 @@ const config = {
     PreloadScene,
     ClickStart,
     TitleScene,
-    GameScene
+    GameScene,
+    EndScene
   ]
 }
 

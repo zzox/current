@@ -24,7 +24,8 @@ export default class TitleScene extends Scene {
       this.menuPositions = 1
     }
 
-    // ADD SELECTOR
+    this.spr = this.add.sprite(106, 100)
+    this.spr.play('bolt-show')
 
     this.prevState = {
       enter: true,
@@ -61,20 +62,19 @@ export default class TitleScene extends Scene {
       if (this.menuPos === this.menuPositions) {
         this.menuPos = this.menuPositions
       } else {
-        // this.sound.playAudioSprite('soundtrack', 'selector', { volume: 0.5 })
+        this.sound.playAudioSprite('sfx', 'select', { volume: 0.7 })
         this.menuPos++
       }
     } else if (this.upKey.isDown && this.upKey.isDown !== this.prevState.upKey) {
       if (this.menuPos === 1) {
         this.menuPos = 1
       } else {
-        // this.sound.playAudioSprite('soundtrack', 'selector', { volume: 0.5 })
+        this.sound.playAudioSprite('sfx', 'select', { volume: 0.7 })
         this.menuPos--
       }
     }
 
-    // move selector to correct position
-    // this.spr.y = this.menuPos * 20 + 120
+    this.spr.y = this.menuPos * 16 + 80
 
     this.prevState = {
       enter: this.enter.isDown,
@@ -82,16 +82,15 @@ export default class TitleScene extends Scene {
       upKey: this.upKey.isDown,
       downKey: this.downKey.isDown
     }
-
-    // this.bgGfx.update()
   }
 
   newGame () {
-    this.scene.start('GameScene', { level: 4 })
+    this.scene.start('GameScene', { level: 0 })
   }
 
   loadGame () {
-    this.scene.start('GameScene', { level: continuedLevel })
+    console.log(this.continuedLevel)
+    this.scene.start('GameScene', { level: this.continuedLevel })
   }
 
   pauseMusic () {

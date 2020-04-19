@@ -2,8 +2,9 @@ import { Scene, Input } from 'phaser'
 import State from '../GameState'
 import ItemSprite from '../objects/ItemSprite'
 import HUD from '../objects/HUD'
+import store from 'store'
 
-const FINAL_LEVEL = 14
+const FINAL_LEVEL = 10
 
 export default class GameScene extends Scene {
   constructor () {
@@ -50,7 +51,6 @@ export default class GameScene extends Scene {
   update (time, delta) {
     const dir = this.dirFromInput()
     if (this.canMove && dir) {
-      console.log(dir)
       this.state.movePlayer(dir)
     }
 
@@ -149,16 +149,19 @@ export default class GameScene extends Scene {
     if (type === 'restart') {
       this.sound.playAudioSprite('sfx', 'gravity')
     } else {
-      this.sound.playAudioSprite('sfx', 'lose')
+      this.sound.playAudioSprite('sfx', 'lose', { volume: 0.65 })
     }
 
     this.newLevel(this.levelNum, false, type)
   }
 
-  playMove () {
+  playMove (moves) {
     const moveVal = Math.ceil(Math.random() * 4)
     this.sound.playAudioSprite('sfx', `move-${moveVal}`)
     this.sound.playAudioSprite('sfx', 'shock-short', { volume: 0.2 })
+    if (moves >= 1 && moves <= 3) {
+      this.sound.playAudioSprite('sfx', `${moves}-steps`, { volume: 0.5 })
+    }
   }
 
   playShock () {
@@ -176,8 +179,6 @@ export default class GameScene extends Scene {
     if (newScene) {
       this.makeLevelItems(levelNum)
     } else {
-      // tween stuff closed
-
       let itemType, delay
       switch (type) {
         case 'death':
@@ -189,7 +190,7 @@ export default class GameScene extends Scene {
           itemType = this.shockTransition
           break
         case 'eaten':
-          delay = 333
+          delay = 166
           itemType = this.teethTransition
           break
         case 'win':
@@ -211,6 +212,12 @@ export default class GameScene extends Scene {
         scaleY: { from: 0.01, to: 100 },
         duration: 500,
         onComplete: () => {
+          if (this.levelNum > FINAL_LEVEL) {
+            this.pauseMusic()
+            this.scene.start('EndScene')
+            return
+          }
+          store.set('current-the-game', this.levelNum)
           this.destroyItems()
           this.makeLevelItems(levelNum, itemType)
         }
@@ -235,8 +242,6 @@ export default class GameScene extends Scene {
 
     this.items = []
     this.state = new State(this.levelData, this)
-
-    console.log('levelData', this.levelData)
 
     if (itemType) {
       this.add.tween({

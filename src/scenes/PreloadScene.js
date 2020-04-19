@@ -67,7 +67,7 @@ export default class PreloadScene extends Scene {
       this.progressBar.destroy()
       this.progressBox.destroy()
       this.scene.start('ClickStart')
-    }, 750)
+    }, 666)
   }
 
   parseLevels (levelsText) {
