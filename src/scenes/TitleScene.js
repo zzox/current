@@ -40,11 +40,7 @@ export default class TitleScene extends Scene {
 
     this.cameras.main.fadeIn(1000)
 
-    // PLAY SONG
-
-    // this.title = this.add.sprite(160, 64)
-    // this.title.play('title-flash')
-    // this.title.setScale(2)
+    this.music = this.sound.playAudioSprite('soundtrack', 'theme', { loop: true })
   }
 
   update () {
@@ -91,7 +87,7 @@ export default class TitleScene extends Scene {
   }
 
   newGame () {
-    this.scene.start('GameScene', { level: 0 })
+    this.scene.start('GameScene', { level: 4 })
   }
 
   loadGame () {
@@ -102,7 +98,7 @@ export default class TitleScene extends Scene {
     // fade out
     const sounds = this.sound.sounds
     for (let i = 0; i < sounds.length; i++) {
-      if (sounds[i].key === 'songs') {
+      if (sounds[i].key === 'soundtrack') {
         this.sound.sounds[i].pause()
       }
     }

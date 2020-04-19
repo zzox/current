@@ -29,24 +29,12 @@ export default class GameScene extends Scene {
 
     this.addKeys()
 
-    // add title up top, before adding to the screen
-
     // pools for environment objects
-    //
 
     this.canMove = true
 
     this.cameras.main.fadeIn(1000)
 
-
-
-    // this.yellow = this.add.graphics()
-    //   .fillStyle(0x1A1A1A)
-    //   .fillRect(0, 0, 240, 135)
-
-    // this.red = this.add.graphics()
-    //   .fillStyle(0x1A1A1A)
-    //   .fillRect(0, 0, 240, 135)
     this.shockTransition = this.add.sprite(120, 67).setVisible(false).setScale(0.1).setDepth(1)
     this.shockTransition.anims.play('bolt-show')
 
@@ -55,6 +43,8 @@ export default class GameScene extends Scene {
 
     this.diverTransition = this.add.sprite(120, 67).setVisible(false).setScale(0.1).setDepth(1)
     this.diverTransition.anims.play('diver-show')
+
+    this.music = this.sound.playAudioSprite('soundtrack', 'level', { loop: true })
   }
 
   update (time, delta) {
@@ -151,11 +141,32 @@ export default class GameScene extends Scene {
   }
 
   winLevel () {
+    this.sound.playAudioSprite('sfx', 'win')
     this.newLevel(this.levelNum + 1, false, 'win')
   }
 
   loseLevel (type) {
+    if (type === 'restart') {
+      this.sound.playAudioSprite('sfx', 'gravity')
+    } else {
+      this.sound.playAudioSprite('sfx', 'lose')
+    }
+
     this.newLevel(this.levelNum, false, type)
+  }
+
+  playMove () {
+    const moveVal = Math.ceil(Math.random() * 4)
+    this.sound.playAudioSprite('sfx', `move-${moveVal}`)
+    this.sound.playAudioSprite('sfx', 'shock-short', { volume: 0.2 })
+  }
+
+  playShock () {
+    this.sound.playAudioSprite('sfx', 'shock-short', { volume: 0.5 })
+  }
+
+  playGravity () {
+    this.sound.playAudioSprite('sfx', 'gravity')
   }
 
   newLevel (levelNum, newScene = false, type = 'restart') {
@@ -174,15 +185,15 @@ export default class GameScene extends Scene {
           itemType = this.shockTransition
           break
         case 'shock':
-          delay = 1000
+          delay = 333
           itemType = this.shockTransition
           break
         case 'eaten':
-          delay = 500
+          delay = 333
           itemType = this.teethTransition
           break
         case 'win':
-          delay = 1000
+          delay = 666
           itemType = this.diverTransition
           break
         case 'restart':
@@ -196,8 +207,8 @@ export default class GameScene extends Scene {
       this.add.tween({
         delay,
         targets: itemType,
-        scaleX: { from: 0.1, to: 100 },
-        scaleY: { from: 0.1, to: 100 },
+        scaleX: { from: 0.01, to: 100 },
+        scaleY: { from: 0.01, to: 100 },
         duration: 500,
         onComplete: () => {
           this.destroyItems()
@@ -211,7 +222,7 @@ export default class GameScene extends Scene {
     this.levelData = { ...window.gameLevels[levelNum] }
     if (this.levelData.leakShock) {
       this.shocker = this.add.sprite()
-      this.shocker.setVisible(false)
+      this.shocker.setVisible(false).setDepth()
       this.shocker.on('animationcomplete', (animation) => {
         if (animation.key === 'shock-twice') {
           this.shocker.setVisible(false)
@@ -230,8 +241,8 @@ export default class GameScene extends Scene {
     if (itemType) {
       this.add.tween({
         targets: itemType,
-        scaleX: { from: 100, to: 0.1 },
-        scaleY: { from: 100, to: 0.1 },
+        scaleX: { from: 100, to: 0.01 },
+        scaleY: { from: 100, to: 0.01 },
         duration: 500,
         onComplete: () => {
           itemType.setVisible(false)
@@ -258,6 +269,16 @@ export default class GameScene extends Scene {
     for (let i = 0; i < 16; i++) {
       const spr = this.add.sprite(i * 16 + 8, 4)
       spr.play('wave')
+    }
+  }
+
+  pauseMusic () {
+    // fade out
+    const sounds = this.sound.sounds
+    for (let i = 0; i < sounds.length; i++) {
+      if (sounds[i].key === 'soundtrack') {
+        this.sound.sounds[i].pause()
+      }
     }
   }
 }

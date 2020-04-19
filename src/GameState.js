@@ -27,7 +27,10 @@ export default class GameState {
 
     if (result) {
       this.moves++
+      this.scene.playMove(this.moves)
       this.scene.hud.updateMoves(this.tries - this.moves)
+    } else {
+      this.scene.playShock(this.moves)
     }
 
     this.moveChars()
@@ -90,7 +93,10 @@ export default class GameState {
     this.allItems.map(item => {
       if (item.gravity) {
         let it = this.move(item, 'down', true)
-        // if first is true, make a sound
+        if (it) {
+          this.scene.playGravity()
+        }
+
         while (it) {
           it = this.move(item, 'down', true)
         }
