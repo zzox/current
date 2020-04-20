@@ -12,19 +12,19 @@ export default class TitleScene extends Scene {
 
     this.add.image(120, 48, 'logo').setScale(2)
 
-    this.add.bitmapText(116, 92, 'font', 'New Game', 8)
+    this.add.bitmapText(110, 92, 'font', 'New Game', 8)
     this.menuPos = 1
 
     const continuedGame = store.get('current-the-game')
     if (continuedGame) {
       this.continuedLevel = continuedGame
-      this.add.bitmapText(116, 106, 'font', 'Continue', 8)
+      this.add.bitmapText(110, 106, 'font', 'Continue', 8)
       this.menuPositions = 2
     } else {
       this.menuPositions = 1
     }
 
-    this.spr = this.add.sprite(106, 100)
+    this.spr = this.add.sprite(100, 100)
     this.spr.play('bolt-show')
 
     this.prevState = {

@@ -229,7 +229,7 @@ export default class GameScene extends Scene {
     this.levelData = { ...window.gameLevels[levelNum] }
     if (this.levelData.leakShock) {
       this.shocker = this.add.sprite()
-      this.shocker.setVisible(false).setDepth()
+      this.shocker.setVisible(false).setDepth(0.8)
       this.shocker.on('animationcomplete', (animation) => {
         if (animation.key === 'shock-twice') {
           this.shocker.setVisible(false)

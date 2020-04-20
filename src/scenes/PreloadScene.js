@@ -66,7 +66,7 @@ export default class PreloadScene extends Scene {
       // ATTN: if deploying on itch.io, skip the ClickStart scene, already taken care of.
       this.progressBar.destroy()
       this.progressBox.destroy()
-      this.scene.start('ClickStart')
+      this.scene.start('TitleScene')
     }, 666)
   }
 
